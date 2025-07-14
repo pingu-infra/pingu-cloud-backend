@@ -1,5 +1,6 @@
 package cloud.pingu.pinguCloudBackend.global.thirdparty.k8s.config;
 
+import static io.kubernetes.client.openapi.Configuration.setDefaultApiClient;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
@@ -23,7 +24,7 @@ public class KubeClientConfig {
     ApiClient client = ClientBuilder
         .kubeconfig(KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath)))
         .build();
-    io.kubernetes.client.openapi.Configuration.setDefaultApiClient(client);
+    setDefaultApiClient(client);
     return client;
   }
 
