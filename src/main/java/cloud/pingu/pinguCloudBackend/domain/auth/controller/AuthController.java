@@ -19,15 +19,14 @@ public class AuthController {
 	private final LoginUsecase loginUsecase;
 	private final RefreshTokenUsecase refreshTokenUsecase;
 	private final LogoutUsecase logoutUsecase;
-	private final SendVerifyCodeUsecase sendVerifyCodeUsecase;
 
-	@PostMapping("/verify")
-	public ResponseEntity<Void> sendVerifyCode(
-		@Valid @RequestBody SendVerifyCodeRequest sendVerifyCodeRequest
-	){
-		sendVerifyCodeUsecase.execute(sendVerifyCodeRequest);
-		return ResponseEntity.ok().build();
-	}
+//	@PostMapping("/verify")
+//	public ResponseEntity<Void> sendVerifyCode(
+//		@Valid @RequestBody SendVerifyCodeRequest sendVerifyCodeRequest
+//	){
+//		sendVerifyCodeUsecase.execute(sendVerifyCodeRequest);
+//		return ResponseEntity.ok().build();
+//	}
 
 	@PostMapping("/join")
 	public ResponseEntity<Void> joinUser(

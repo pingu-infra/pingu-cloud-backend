@@ -26,11 +26,8 @@ public class SecurityConfig {
 			.authorizeHttpRequests(it -> it
 				// 인증
 				.requestMatchers("/auth/**").permitAll()
-				// 예매
-				.requestMatchers(HttpMethod.POST, "/seat").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
-				.requestMatchers(HttpMethod.DELETE, "/seat").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
-				.requestMatchers(HttpMethod.POST, "/seat/ban").hasAuthority(Role.ROLE_ADMIN.name())
-				.requestMatchers(HttpMethod.DELETE, "/seat/ban").hasAuthority(Role.ROLE_ADMIN.name())
+				// 테스트
+				.requestMatchers(HttpMethod.GET, "/test/**").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
 				// 상태 확인
 				.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 			)
