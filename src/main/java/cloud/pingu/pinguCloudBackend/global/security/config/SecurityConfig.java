@@ -1,0 +1,46 @@
+package cloud.pingu.pinguCloudBackend.global.security.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import cloud.pingu.pinguCloudBackend.domain.user.enums.Role;
+import cloud.pingu.pinguCloudBackend.global.security.filter.JwtFilter;
+import cloud.pingu.pinguCloudBackend.global.security.jwt.JwtProvider;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@RequiredArgsConstructor
+public class SecurityConfig {
+	private final JwtProvider jwtProvider;
+
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		JwtFilter jwtFilter = new JwtFilter(jwtProvider);
+
+		return http
+			.authorizeHttpRequests(it -> it
+				// 인증
+				.requestMatchers("/auth/**").permitAll()
+				// 예매
+				.requestMatchers(HttpMethod.POST, "/seat").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
+				.requestMatchers(HttpMethod.DELETE, "/seat").hasAnyAuthority(Role.ROLE_ADMIN.name(), Role.ROLE_USER.name())
+				.requestMatchers(HttpMethod.POST, "/seat/ban").hasAuthority(Role.ROLE_ADMIN.name())
+				.requestMatchers(HttpMethod.DELETE, "/seat/ban").hasAuthority(Role.ROLE_ADMIN.name())
+				// 상태 확인
+				.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
+			)
+			.csrf(AbstractHttpConfigurer::disable)
+			.formLogin(AbstractHttpConfigurer::disable)
+			.httpBasic(AbstractHttpConfigurer::disable)
+			.sessionManagement (it ->
+				it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			)
+			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+			.build();
+	}
+}
